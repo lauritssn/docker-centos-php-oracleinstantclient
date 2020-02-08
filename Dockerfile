@@ -11,6 +11,7 @@
 # https://medium.com/@asasmoyo/setup-php-oci8-on-centos-7-ubuntu14-04-b9d97383fda4
 # https://medium.com/@asasmoyo/setup-php-oci8-on-centos-7-ubuntu14-04-b9d97383fda4
 # https://www.drupal.org/node/59680
+# https://gist.github.com/faizalmansor/8a836037e61c11dad5c6f7e455c318f0
 ############################################
 
 FROM centos:7
@@ -31,12 +32,20 @@ RUN rpm -Uvh http://rpms.remirepo.net/enterprise/remi-release-7.rpm
 # Install PHP
 ############################################
 RUN yum --enablerepo=remi-php73 -y install php php-bcmath php-cli php-common php-gd php-intl php-ldap php-mbstring \
-    php-mysqlnd php-pear php-soap php-xml php-xmlrpc php-zip php-devel php-oci8
+    php-mysqlnd php-pear php-soap php-xml php-xmlrpc php-zip php-devel php-oci8 php-odbc php-pdo
 
 ############################################
 # Install Other packages
 ############################################
 RUN yum -y install wget unzip make systemtap-sdt-devel
+
+############################################
+# Install MSSQL related packages
+############################################
+RUN yum -y install unixODBC unixODBC-devel
+RUN yum -y install epel-release 
+RUN yum check-update 
+RUN yum -y install freetds freetds-devel
 
 ############################################
 # Install Oracle instantclient
@@ -87,7 +96,7 @@ RUN echo " " >> /etc/httpd/conf/httpd.conf
 RUN echo "SetEnv LD_LIBRARY_PATH /usr/lib/oracle/19.5/client64/lib/" >> /etc/httpd/conf/httpd.conf
 
 ############################################
-# PHPInfo testfile - should be deleted later.
+# Update Apache Configuration
 ############################################
 RUN touch /var/www/html/test.php
 RUN echo "<?php" >> /var/www/html/test.php
