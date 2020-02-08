@@ -96,7 +96,7 @@ RUN echo " " >> /etc/httpd/conf/httpd.conf
 RUN echo "SetEnv LD_LIBRARY_PATH /usr/lib/oracle/19.5/client64/lib/" >> /etc/httpd/conf/httpd.conf
 
 ############################################
-# Update Apache Configuration
+# PHPInfo testfile - should be deleted later.
 ############################################
 RUN touch /var/www/html/test.php
 RUN echo "<?php" >> /var/www/html/test.php
