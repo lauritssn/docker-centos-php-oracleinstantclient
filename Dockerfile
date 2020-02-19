@@ -50,9 +50,12 @@ RUN yum -y install freetds freetds-devel
 ############################################
 # Install Oracle instantclient
 ############################################
+RUN cd /tmp
 RUN wget https://download.oracle.com/otn_software/linux/instantclient/195000/oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm
 RUN wget https://download.oracle.com/otn_software/linux/instantclient/195000/oracle-instantclient19.5-devel-19.5.0.0.0-1.x86_64.rpm
 RUN yum -y localinstall oracle* --nogpgcheck
+RUN rm oracle-instantclient19.5-basic-19.5.0.0.0-1.x86_64.rpm
+RUN rm oracle-instantclient19.5-devel-19.5.0.0.0-1.x86_64.rpm
 
 ############################################
 # Configure Oracle instant client
