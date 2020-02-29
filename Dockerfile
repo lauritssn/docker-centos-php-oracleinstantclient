@@ -42,7 +42,16 @@ RUN yum -y install wget unzip make systemtap-sdt-devel
 ############################################
 # Install MSSQL related packages
 ############################################
-RUN yum -y install unixODBC unixODBC-devel
+# Using guide: https://www.microsoft.com/en-us/sql-server/developer-get-started/php/rhel
+RUN curl https://packages.microsoft.com/config/rhel/7/prod.repo > /etc/yum.repos.d/mssql-release.repo
+RUN yum -y remove unixODBC-utf16 unixODBC-utf16-devel #to avoid conflicts
+RUN ACCEPT_EULA=Y yum -y install msodbcsql17
+RUN yum -y install unixODBC-devel
+RUN pecl install sqlsrv
+RUN pecl install pdo_sqlsrv
+RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/30-pdo_sqlsrv.ini
+RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
+
 RUN yum -y install epel-release 
 RUN yum check-update 
 RUN yum -y install freetds freetds-devel
@@ -62,10 +71,6 @@ RUN rm oracle-instantclient19.5-devel-19.5.0.0.0-1.x86_64.rpm
 ############################################
 RUN mkdir /usr/lib/oracle/19.5/client64/network/admin -p
 RUN touch /usr/lib/oracle/19.5/client64/network/admin/tnsnames.ora
-
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-# Expose tnsnames.ora outside container
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ############################################
 # Configure Environment Variables
@@ -110,6 +115,12 @@ RUN echo "?>" >> /var/www/html/test.php
 # Expose port
 ############################################
 EXPOSE 80
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# Bind www and tnsnames.ora outside container
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+# /usr/lib/oracle/19.5/client64/network/admin/tnsnames.ora as file
+# /var/www/html as folder
 
 ############################################
 # Start Apache
