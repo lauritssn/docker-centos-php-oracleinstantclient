@@ -52,9 +52,9 @@ RUN echo extension=pdo_sqlsrv.so >> `php --ini | grep "Scan for additional .ini 
 RUN echo extension=sqlsrv.so >> `php --ini | grep "Scan for additional .ini files" | sed -e "s|.*:\s*||"`/20-sqlsrv.ini
 
 RUN yum -y install epel-release 
-RUN yum check-update 
 RUN yum -y install freetds freetds-devel
 
+RUN yum -y check-update || { rc=$?; [ "$rc" -eq 100 ] && exit 0; exit "$rc"; }
 RUN yum -y update
 
 ############################################
