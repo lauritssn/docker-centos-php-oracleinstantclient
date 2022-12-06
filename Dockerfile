@@ -13,7 +13,6 @@
 # https://www.drupal.org/node/59680
 # https://gist.github.com/faizalmansor/8a836037e61c11dad5c6f7e455c318f0
 ############################################
-
 FROM centos:7
 
 ############################################
@@ -56,6 +55,8 @@ RUN yum -y install epel-release
 RUN yum check-update 
 RUN yum -y install freetds freetds-devel
 
+RUN yum -y update
+
 ############################################
 # Install Oracle instantclient
 ############################################
@@ -85,7 +86,7 @@ RUN echo "export TNS_ADMIN=$ORACLE_HOME/network/admin" >> /etc/profile.d/client.
 ############################################
 # Install PECL
 ############################################
-RUN export PHP_DTRACE=yes && echo "instantclient,/usr/lib/oracle/19.5/client64/lib"|pecl install oci8
+RUN export PHP_DTRACE=yes && echo "instantclient,/usr/lib/oracle/19.5/client64/lib"|pecl install oci8-2.2.0
 
 ############################################
 # Update PHP configuration
