@@ -112,10 +112,20 @@ RUN echo "<?php" >> /var/www/html/test.php
 RUN echo "phpinfo();" >> /var/www/html/test.php
 RUN echo "?>" >> /var/www/html/test.php
 
+
+#############################################
+#RUN useradd -G apache -ms /bin/bash appuser
+#
+## Fix special permissions for html files and logs
+#RUN chown -R appuser:root /var/www/html
+#RUN chown -R appuser:root /etc/httpd/logs/
+#
+## Redirect Apache logs to stdout and stderr
+#RUN ln -sf /proc/$$/fd/1 /etc/httpd/logs/access.log
+#RUN ln -sf /proc/$$/fd/2 /etc/httpd/logs/error.log
+
+# USER appuser
 ############################################
-# Expose port
-############################################
-EXPOSE 80
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 # Bind www and tnsnames.ora outside container
@@ -124,6 +134,13 @@ EXPOSE 80
 # /var/www/html as folder
 
 ############################################
+# Expose port
+############################################
+EXPOSE 80 443
+
+############################################
 # Start Apache
 ############################################
 CMD ["/usr/sbin/httpd","-D","FOREGROUND"]
+
+
